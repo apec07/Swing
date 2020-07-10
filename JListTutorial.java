@@ -38,19 +38,24 @@ public class JListTutorial implements ActionListener,DocumentListener {
 			
 		}
 		
-		// Listen for changes in the text
+		// Listen for changed on JTextField
+		// Monitor each JTextField and total characters by counting e.getLength()
+		// 
 		@Override
   	public void changedUpdate(DocumentEvent e) {
-  		// e.getLength() == 0 
-    	System.out.println("changedUpdate "+e.getDocument());
+  		
+    	System.out.println("changedUpdate "+e.getDocument()+"changed "+e.getLength());
   	}
+  	
   	@Override
   	public void removeUpdate(DocumentEvent e) {
-    	System.out.println("removeUpdate "+e.getDocument());
+  		
+    	System.out.println("removeUpdate "+e.getDocument()+"changed "+e.getLength());
   	}
   	@Override
   	public void insertUpdate(DocumentEvent e) {
-    	System.out.println("insertUpdate "+e.getDocument());
+  		
+    	System.out.println("insertUpdate "+e.getDocument()+"changed "+e.getLength());
  	  }
 
 	public JListTutorial(){
