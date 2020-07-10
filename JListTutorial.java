@@ -1,11 +1,12 @@
 
 import javax.swing.*;
+import javax.swing.event.*;
 import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
 
 
-public class JListTutorial implements ActionListener {
+public class JListTutorial implements ActionListener,DocumentListener {
 	
 	//Data
 	private List<Account> mAccountList;;
@@ -21,7 +22,7 @@ public class JListTutorial implements ActionListener {
 	private JPanel[] panels = new JPanel[4];
 	private JLabel[] labels = new JLabel[4];
 	private JButton[] buttons = new JButton[3];
-	private TextField[] texts =  new TextField[4];
+	private JTextField[] texts =  new JTextField[4];
 	
 	@Override
 		public void actionPerformed(ActionEvent e){
@@ -36,6 +37,21 @@ public class JListTutorial implements ActionListener {
 			}
 			
 		}
+		
+		// Listen for changes in the text
+		@Override
+  	public void changedUpdate(DocumentEvent e) {
+  		// e.getLength() == 0 
+    	System.out.println("changedUpdate "+e.getDocument());
+  	}
+  	@Override
+  	public void removeUpdate(DocumentEvent e) {
+    	System.out.println("removeUpdate "+e.getDocument());
+  	}
+  	@Override
+  	public void insertUpdate(DocumentEvent e) {
+    	System.out.println("insertUpdate "+e.getDocument());
+ 	  }
 
 	public JListTutorial(){
 		mList.setModel(model);
@@ -64,7 +80,8 @@ public class JListTutorial implements ActionListener {
 		}
 		for(int i =0 ; i<3 ; i++){
 			labels[i] = new JLabel(mTextName[i]);
-			texts[i] = new TextField(20);
+			texts[i] = new JTextField(20);
+			texts[i].getDocument().addDocumentListener(this);
 			panels[i].add(labels[i]);
 			panels[i].add(texts[i]);
 			buttons[i] = new JButton(mButtonName[i]);
