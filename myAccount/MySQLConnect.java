@@ -5,17 +5,18 @@ CREATE TABLE IF NOT EXISTS ACCOUNT (
 ID INT NOT NULL AUTO_INCREMENT,
 USER varchar(50) NOT NULL UNIQUE,
 PASSWORD varchar(50) NOT NULL,
+NOTE varchar(200),
 PRIMARY KEY ( ID ));
 
 
 # Insert DATA into Table account
 INSERT INTO ACCOUNT 
-(USER,PASSWORD) 
-VALUES ("account1", "myPassword1");
+(USER,PASSWORD,NOTE) 
+VALUES ("account1", "myPassword1","this is my note1");
 
 INSERT INTO ACCOUNT 
-(USER,PASSWORD) 
-VALUES ("account2", "myPassword2");
+(USER,PASSWORD,NOTE) 
+VALUES ("account2", "myPassword2","this is my note2");
 
 # Query DATA
 select * from account;
@@ -58,10 +59,12 @@ class MySQLConnect {
                 int str1 = rs.getInt(1);
                 String str2 = rs.getString(2);
                 String str3 = rs.getString(3);
+                String str4 = rs.getString(4);
 
                 System.out.print(" _ID= " + str1);
                 System.out.print(" User= " + str2);
                 System.out.print(" Password= " + str3);
+                System.out.print(" note= " + str4);
                 System.out.print("\n");
             }
 

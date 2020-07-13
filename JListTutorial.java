@@ -6,12 +6,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-public class JListTutorial implements ActionListener,DocumentListener {
+public class JListTutorial implements ActionListener {
 	
 	//Data
 	private List<Account> mAccountList;;
 	private final static String[] mTextName ={"User","Password","Note","Button"};
-	private final static String[] mButtonName = {"Update","Delete","Restore"};
+	private final static String[] mButtonName = {"Update","Delete","New"};
 	
 	private JFrame f = new JFrame("MySQL List");
 	private JList<Account> mList = new JList<>();
@@ -24,56 +24,56 @@ public class JListTutorial implements ActionListener,DocumentListener {
 	private JButton[] buttons = new JButton[3];
 	private JTextField[] texts =  new JTextField[4];
 	
+	private static Account account ;
+	
 	@Override
 		public void actionPerformed(ActionEvent e){
+			
 			if(e.getSource()==buttons[0]){
-				System.out.println("Click Update");
+				System.out.println("Click Update " + account.getId());
+				int updateNum = Utility.WriteToMySQL(account,0);
+				System.out.println("data num ="+updateList());
+				
 			}else if(e.getSource()==buttons[1]){
-				System.out.println("Click Delete");
+				System.out.println("Click Delete " + account.getId());
+				int updateNum = Utility.WriteToMySQL(account,1);
+				System.out.println("data num ="+updateList());
+				
 			}else if(e.getSource()==buttons[2]){
-				System.out.println("Click Restore");
+				System.out.println("Click New " + account.getId());
+				int updateNum = Utility.WriteToMySQL(account,2);
+				System.out.println("data num ="+updateList());
+				
 			}else{
 				System.out.println("Action undefined");
 			}
 			
 		}
 		
-		// Listen for changed on JTextField
-		// Monitor each JTextField and total characters by counting e.getLength()
-		// 
-		@Override
-  	public void changedUpdate(DocumentEvent e) {
-  		
-    	System.out.println("changedUpdate "+e.getDocument()+"changed "+e.getLength());
-  	}
-  	
-  	@Override
-  	public void removeUpdate(DocumentEvent e) {
-  		
-    	System.out.println("removeUpdate "+e.getDocument()+"changed "+e.getLength());
-  	}
-  	@Override
-  	public void insertUpdate(DocumentEvent e) {
-  		
-    	System.out.println("insertUpdate "+e.getDocument()+"changed "+e.getLength());
- 	  }
-
-	public JListTutorial(){
-		mList.setModel(model);
-		/*
-		 Query DATA! put on left panel
-		*/
+	private int updateList(){
+		
 		boolean isConnect = Utility.MySQLConnect();
-		if(!isConnect) return;
+		if(!isConnect) return 0;
+		//DefaultListModel<Account> model = (DefaultListModel)mList.getModel();
+		//model.clear();
 		
 		mAccountList = Utility.readFromMySQL();
-		if(mAccountList.size()==0) return;
+		if(mAccountList.size()==0) return 0;
 	
 		System.out.println(mAccountList);
 		for(int i=0;i<mAccountList.size();i++){
 			model.addElement(mAccountList.get(i));
 			mAccountList.get(i).getUser();
 		}
+		return mAccountList.size();
+	}
+
+	public JListTutorial(){
+		mList.setModel(model);
+		/*
+		 Query DATA! put on left panel
+		*/
+		System.out.println("data num ="+updateList());
 		
 		/*
 			right panel show data with addListSelectionListener
@@ -86,7 +86,6 @@ public class JListTutorial implements ActionListener,DocumentListener {
 		for(int i =0 ; i<3 ; i++){
 			labels[i] = new JLabel(mTextName[i]);
 			texts[i] = new JTextField(20);
-			texts[i].getDocument().addDocumentListener(this);
 			panels[i].add(labels[i]);
 			panels[i].add(texts[i]);
 			buttons[i] = new JButton(mButtonName[i]);
@@ -95,11 +94,13 @@ public class JListTutorial implements ActionListener,DocumentListener {
 		}
 		
 		mList.getSelectionModel().addListSelectionListener(e->{
-			Account account = mList.getSelectedValue();
+			account = mList.getSelectedValue();
 			String user = account.getUser();
 			String password = account.getPassword();
+			String note = account.getNote();
 			texts[0].setText(user);
 			texts[1].setText(password);
+			texts[2].setText(note);
 		});
 		
 		splitPane.setLeftComponent(new JScrollPane(mList));

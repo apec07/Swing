@@ -66,13 +66,17 @@ public class Utility {
                 int _id = rs.getInt(1);
                 String user = rs.getString(2);
                 String password = rs.getString(3);
+                String note = rs.getString(4);
 
                 System.out.print(" _ID= " + _id);
                 System.out.print(" User= " + user);
                 System.out.print(" Password= " + password);
+                System.out.print(" Note= " + note);
                 System.out.print("\n");
+                account.setId(_id);
                 account.setUser(user);
                 account.setPassword(password);
+                account.setNote(note);
                 mList.add(account);
             }
 
@@ -88,17 +92,36 @@ public class Utility {
         return mList;
 	}
 	
-	public static int WriteToMySQL(Account account){
+	public static int WriteToMySQL(Account account,int type){
 		int updateNum;
+		int id = account.getId();
 		String user = account.getUser();
 		String password = account.getPassword();
+		String sqlUrl="";
 		System.out.println("WriteToMySQL "+ account);
 		if (user==null || user.trim().length()==0){
 			System.out.println("WriteToMySQL return");
 			return 0;
 		}
+		switch (type){
+			case 0://type 0
+			
+				break;
+				
+			case 1://type 1
+				sqlUrl = "DELETE FROM ACCOUNT WHERE ID = "+id+" ;";
+				break;
+				
+			case 2://type 2
+				sqlUrl = "INSERT INTO ACCOUNT (USER,PASSWORD) VALUES (\""+user+"\",\""+password+"\");";
+				break;
+			default:
+				System.out.println("WriteToMySQL tpye =" +type);
+		}
 		
-		String sqlUrl = "INSERT INTO ACCOUNT (USER,PASSWORD) VALUES (\""+user+"\",\""+password+"\");";
+		if(sqlUrl.length()==0){
+			return 0;
+		}
 		
 		try {
         		Properties prop = new Properties();
