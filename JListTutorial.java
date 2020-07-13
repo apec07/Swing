@@ -40,10 +40,14 @@ public class JListTutorial implements ActionListener {
 				System.out.println("data num ="+updateList());
 				
 			}else if(e.getSource()==buttons[2]){
-				System.out.println("Click New " + account.getId());
-				int updateNum = Utility.WriteToMySQL(account,2);
-				System.out.println("data num ="+updateList());
+				Account newAccount = new Account();
+				newAccount.setUser(texts[0].getText());
+				newAccount.setPassword(texts[1].getText());
+				newAccount.setNote(texts[2].getText());
 				
+				int updateNum = Utility.WriteToMySQL(newAccount,2);
+				System.out.println("data num ="+updateList());
+				System.out.println("Click New ");
 			}else{
 				System.out.println("Action undefined");
 			}
@@ -54,10 +58,16 @@ public class JListTutorial implements ActionListener {
 		
 		boolean isConnect = Utility.MySQLConnect();
 		if(!isConnect) return 0;
-		//DefaultListModel<Account> model = (DefaultListModel)mList.getModel();
-		//model.clear();
-		
+		model = (DefaultListModel)mList.getModel();
+		model.clear();
+		/*
+		int selectedIndex = mList.getSelectedIndex();
+		if (selectedIndex != -1) {
+    model.remove(selectedIndex);
+		}
+		*/
 		mAccountList = Utility.readFromMySQL();
+		System.out.println("mAccountList = "+mAccountList);
 		if(mAccountList.size()==0) return 0;
 	
 		System.out.println(mAccountList);
@@ -94,10 +104,22 @@ public class JListTutorial implements ActionListener {
 		}
 		
 		mList.getSelectionModel().addListSelectionListener(e->{
+			
+			//Delete is PASS - catch NullPointerException 
+			//Update is TBD - catch NullPointerException ? 
+			//Rename(user,password,note) but DB _ID WILL NOT CHAGED!
+			System.out.println("addListSelectionListener account = "+ account );
 			account = mList.getSelectedValue();
-			String user = account.getUser();
-			String password = account.getPassword();
-			String note = account.getNote();
+			String user,password,note;
+		  try{
+		  	user = account.getUser();
+				password = account.getPassword();
+				note = account.getNote();
+		  }catch(NullPointerException ex){
+		   System.err.println("delete - " + ex);
+		   	user=password=note ="";
+			}
+			
 			texts[0].setText(user);
 			texts[1].setText(password);
 			texts[2].setText(note);

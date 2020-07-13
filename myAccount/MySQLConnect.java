@@ -27,6 +27,11 @@ DELETE FROM account
 DELETE FROM account where user = "account1";
 DELETE FROM account where user = "account2";
 
+# Update DATA
+UPDATE ACCOUNT SET 
+USER="change1", PASSWORD="change2", NOTE="change3"
+WHERE ID = 13;
+
 # Drop Table
 Drop Table Account;
 

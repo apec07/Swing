@@ -94,26 +94,32 @@ public class Utility {
 	
 	public static int WriteToMySQL(Account account,int type){
 		int updateNum;
-		int id = account.getId();
+		System.out.println("WriteToMySQL account = "+account);
+		int id;
 		String user = account.getUser();
 		String password = account.getPassword();
+		String note = account.getNote();
 		String sqlUrl="";
-		System.out.println("WriteToMySQL "+ account);
+	
 		if (user==null || user.trim().length()==0){
 			System.out.println("WriteToMySQL return");
 			return 0;
 		}
 		switch (type){
 			case 0://type 0
-			
+				id = account.getId();
+				System.out.println("WriteToMySQL update id = "+id);
+				sqlUrl = "UPDATE ACCOUNT SET USER=\""+user+"\", PASSWORD=\""+password+"\", NOTE=\""+note+"\" WHERE ID = "+id+";";
 				break;
 				
 			case 1://type 1
+				id = account.getId();
 				sqlUrl = "DELETE FROM ACCOUNT WHERE ID = "+id+" ;";
 				break;
 				
 			case 2://type 2
-				sqlUrl = "INSERT INTO ACCOUNT (USER,PASSWORD) VALUES (\""+user+"\",\""+password+"\");";
+				sqlUrl = "INSERT INTO ACCOUNT (USER,PASSWORD,NOTE) VALUES (\""+user+"\""+",\""+password+"\""+",\""+note+"\""+");";
+																																	
 				break;
 			default:
 				System.out.println("WriteToMySQL tpye =" +type);
