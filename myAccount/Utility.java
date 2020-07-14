@@ -51,7 +51,7 @@ public class Utility {
 	}
 	// STUDY
 	// Connection con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/db_morgan?"+"autoReconnect=true&useSSL=false", prop); 
-	public static boolean createDataBase(){
+	public static boolean loginDB(){
 		/* 
 		 use below SQL syntax :
 		CREATE DATABASE IF NOT EXISTS db_morgan;
@@ -61,24 +61,22 @@ public class Utility {
 		return false;
 	}
 	
-	public static boolean createTable(String tableName){
-		/*
-		 use below SQL syntax :
-		CREATE TABLE IF NOT EXISTS ACCOUNT (
-		ID INT NOT NULL AUTO_INCREMENT,
-		USER varchar(50) NOT NULL UNIQUE,
-		PASSWORD varchar(50) NOT NULL,
-		NOTE varchar(200),
-		PRIMARY KEY ( ID ));
-		*/
-		String sqlUrl="";
+	public static boolean createAccount(){
+		
+		String sqlUrl="CREATE TABLE IF NOT EXISTS ACCOUNT ("+
+		"ID INT NOT NULL AUTO_INCREMENT,"+
+		"USER varchar(50) NOT NULL UNIQUE,"+
+		"PASSWORD varchar(50) NOT NULL,"+
+		"NOTE varchar(200),"+
+		"PRIMARY KEY ( ID ));";
 		boolean isTableCreated = false;
+		
 				try {
         		Properties prop = new Properties();
             prop.load(new FileInputStream("JDBC.properties"));
             Connection con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/db_morgan?"+"autoReconnect=true&useSSL=false", prop);
             Statement stmt = con.createStatement();
-            updateNum = stmt.executeUpdate(sqlUrl);
+            stmt.executeUpdate(sqlUrl);
          
             stmt.close();
             con.close();
@@ -133,7 +131,7 @@ public class Utility {
         return mList;
 	}
 	
-	public static int WriteToMySQL(Account account,int type){
+	public static int writeToMySQL(Account account,int type){
 		int updateNum;
 		System.out.println("WriteToMySQL account = "+account+"\n");
 		int id=account.getId();
@@ -188,6 +186,61 @@ public class Utility {
             return 0;
         }
 		return updateNum;
+	}
+	
+	public static int preparedWriteToMySQL(Account account,int type){
+		int updateNum=0;
+		int id=account.getId();
+		String user = account.getUser();
+		String password = account.getPassword();
+		String note = account.getNote();
+		String sqlUrl="";
+		
+		
+		try {
+        		Properties prop = new Properties();
+            prop.load(new FileInputStream("JDBC.properties"));
+            Connection con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/db_morgan?"+"autoReconnect=true&useSSL=false", prop);
+      			PreparedStatement pstm = con.prepareStatement(sqlUrl); 
+            switch (type){
+			case 0://type 0
+				sqlUrl = "UPDATE ACCOUNT SET USER= ?, PASSWORD= ?, NOTE= ? WHERE ID = ?";
+				     
+				pstm.setString(1,user);
+				pstm.setString(2,password);
+				pstm.setString(3,note);
+				pstm.setInt(4,id);
+				break;
+				
+			case 1://type 1
+				sqlUrl = "DELETE FROM ACCOUNT WHERE ID = ?";
+				pstm = con.prepareStatement(sqlUrl);      
+				pstm.setInt(1,id);
+				
+				break;
+				
+			case 2://type 2
+			
+				sqlUrl = "INSERT INTO ACCOUNT (USER,PASSWORD,NOTE) VALUES (? ,? ,? )";
+				pstm = con.prepareStatement(sqlUrl);      
+				pstm.setString(1,user);
+				pstm.setString(2,password);
+				pstm.setString(3,note);																													
+				break;
+			default: 
+				System.out.println("prepareWriteToMySQL tpye =" +type);
+				//updateNum = pstm.executeUpdate(sqlUrl);
+		}
+            
+            pstm.close();
+            con.close();
+
+        } catch (Exception ex) {
+            System.err.println("SQLException: " + ex.getMessage());
+            return 0;
+        }
+		return updateNum;
+		
 	}
 
 }

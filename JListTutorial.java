@@ -37,12 +37,12 @@ public class JListTutorial implements ActionListener {
 				updateAccount.setPassword(texts[1].getText());
 				updateAccount.setNote(texts[2].getText());
 				
-				int updateNum = Utility.WriteToMySQL(updateAccount,0);
+				int updateNum = Utility.writeToMySQL(updateAccount,0);
 				System.out.println("data num ="+updateList());
 				
 			}else if(e.getSource()==buttons[1]){
 				System.out.println("Click Delete " + account.getId());
-				int updateNum = Utility.WriteToMySQL(account,1);
+				int updateNum = Utility.writeToMySQL(account,1);
 				System.out.println("data num ="+updateList());
 				
 			}else if(e.getSource()==buttons[2]){
@@ -51,7 +51,7 @@ public class JListTutorial implements ActionListener {
 				newAccount.setPassword(texts[1].getText());
 				newAccount.setNote(texts[2].getText());
 				
-				int updateNum = Utility.WriteToMySQL(newAccount,2);
+				int updateNum = Utility.writeToMySQL(newAccount,2);
 				System.out.println("data num ="+updateList());
 				System.out.println("Click New ");
 			}else{
@@ -64,6 +64,11 @@ public class JListTutorial implements ActionListener {
 		
 		boolean isConnect = Utility.MySQLConnect();
 		if(!isConnect) return 0;
+		boolean isTableCreated = Utility.createAccount();
+		if(!isTableCreated){
+			System.out.println("isTableCreated = " + isTableCreated);
+			return 0;
+		}
 		model = (DefaultListModel)mList.getModel();
 		model.clear();
 		/*
