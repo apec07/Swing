@@ -49,6 +49,47 @@ public class Utility {
         }
         return true;
 	}
+	// STUDY
+	// Connection con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/db_morgan?"+"autoReconnect=true&useSSL=false", prop); 
+	public static boolean createDataBase(){
+		/* 
+		 use below SQL syntax :
+		CREATE DATABASE IF NOT EXISTS db_morgan;
+		USE db_morgan;
+		*/
+		
+		return false;
+	}
+	
+	public static boolean createTable(String tableName){
+		/*
+		 use below SQL syntax :
+		CREATE TABLE IF NOT EXISTS ACCOUNT (
+		ID INT NOT NULL AUTO_INCREMENT,
+		USER varchar(50) NOT NULL UNIQUE,
+		PASSWORD varchar(50) NOT NULL,
+		NOTE varchar(200),
+		PRIMARY KEY ( ID ));
+		*/
+		String sqlUrl="";
+		boolean isTableCreated = false;
+				try {
+        		Properties prop = new Properties();
+            prop.load(new FileInputStream("JDBC.properties"));
+            Connection con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/db_morgan?"+"autoReconnect=true&useSSL=false", prop);
+            Statement stmt = con.createStatement();
+            updateNum = stmt.executeUpdate(sqlUrl);
+         
+            stmt.close();
+            con.close();
+
+        } catch (Exception ex) {
+            System.err.println("SQLException: " + ex.getMessage());
+            return false;
+        }
+		
+		return true;
+	}
 	
 	public static List<Account> readFromMySQL(){
 		
@@ -94,13 +135,16 @@ public class Utility {
 	
 	public static int WriteToMySQL(Account account,int type){
 		int updateNum;
-		System.out.println("WriteToMySQL account = "+account);
-		int id;
+		System.out.println("WriteToMySQL account = "+account+"\n");
+		int id=account.getId();
 		String user = account.getUser();
 		String password = account.getPassword();
 		String note = account.getNote();
 		String sqlUrl="";
-	
+		System.out.println("WriteToMySQL account id= "+id);
+		System.out.println("WriteToMySQL account user= "+user);
+		System.out.println("WriteToMySQL account password= "+password);
+		System.out.println("WriteToMySQL account note= "+note);
 		if (user==null || user.trim().length()==0){
 			System.out.println("WriteToMySQL return");
 			return 0;

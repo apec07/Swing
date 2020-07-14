@@ -1,5 +1,11 @@
 /*
 # SQL syntax
+
+# Create & Use DB
+
+CREATE DATABASE IF NOT EXISTS db_morgan;
+USE db_morgan;
+
 # Create Table    
 CREATE TABLE IF NOT EXISTS ACCOUNT (
 ID INT NOT NULL AUTO_INCREMENT,

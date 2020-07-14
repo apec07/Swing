@@ -31,7 +31,13 @@ public class JListTutorial implements ActionListener {
 			
 			if(e.getSource()==buttons[0]){
 				System.out.println("Click Update " + account.getId());
-				int updateNum = Utility.WriteToMySQL(account,0);
+				Account updateAccount = new Account();
+				updateAccount.setId(account.getId());
+				updateAccount.setUser(texts[0].getText());
+				updateAccount.setPassword(texts[1].getText());
+				updateAccount.setNote(texts[2].getText());
+				
+				int updateNum = Utility.WriteToMySQL(updateAccount,0);
 				System.out.println("data num ="+updateList());
 				
 			}else if(e.getSource()==buttons[1]){
@@ -105,11 +111,10 @@ public class JListTutorial implements ActionListener {
 		
 		mList.getSelectionModel().addListSelectionListener(e->{
 			
-			//Delete is PASS - catch NullPointerException 
-			//Update is TBD - catch NullPointerException ? 
-			//Rename(user,password,note) but DB _ID WILL NOT CHAGED!
+			//Delete & Update : PASS - catch NullPointerException 
+			
+			account = mList.getSelectedValue(); // return null (update & delete)
 			System.out.println("addListSelectionListener account = "+ account );
-			account = mList.getSelectedValue();
 			String user,password,note;
 		  try{
 		  	user = account.getUser();
