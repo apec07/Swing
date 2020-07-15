@@ -196,6 +196,16 @@ public class Utility {
 		String note = account.getNote();
 		String sqlUrl="";
 		
+		if(type==0){
+			sqlUrl = "UPDATE ACCOUNT SET USER= ?, PASSWORD= ?, NOTE= ? WHERE ID = ?";
+		}else if(type==1){
+			sqlUrl = "DELETE FROM ACCOUNT WHERE ID = ?";
+		}else if(type==2){
+			sqlUrl = "INSERT INTO ACCOUNT (USER,PASSWORD,NOTE) VALUES (? ,? ,? )";
+		}else{
+		  return 0;
+		}
+		
 		
 		try {
         		Properties prop = new Properties();
@@ -203,35 +213,31 @@ public class Utility {
             Connection con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/db_morgan?"+"autoReconnect=true&useSSL=false", prop);
       			PreparedStatement pstm = con.prepareStatement(sqlUrl); 
             switch (type){
-			case 0://type 0
-				sqlUrl = "UPDATE ACCOUNT SET USER= ?, PASSWORD= ?, NOTE= ? WHERE ID = ?";
-				     
-				pstm.setString(1,user);
-				pstm.setString(2,password);
-				pstm.setString(3,note);
-				pstm.setInt(4,id);
-				break;
+								case 0://type 0
+								System.out.println("type = "+type);
+									pstm.setString(1,user);
+									pstm.setString(2,password);
+									pstm.setString(3,note);
+									pstm.setInt(4,id);
+									break;
 				
-			case 1://type 1
-				sqlUrl = "DELETE FROM ACCOUNT WHERE ID = ?";
-				pstm = con.prepareStatement(sqlUrl);      
-				pstm.setInt(1,id);
+								case 1://type 1
+								System.out.println("type = "+type);
+									pstm = con.prepareStatement(sqlUrl);      
+									pstm.setInt(1,id);
+									break;
 				
-				break;
-				
-			case 2://type 2
-			
-				sqlUrl = "INSERT INTO ACCOUNT (USER,PASSWORD,NOTE) VALUES (? ,? ,? )";
-				pstm = con.prepareStatement(sqlUrl);      
-				pstm.setString(1,user);
-				pstm.setString(2,password);
-				pstm.setString(3,note);																													
-				break;
-			default: 
-				System.out.println("prepareWriteToMySQL tpye =" +type);
-				//updateNum = pstm.executeUpdate(sqlUrl);
-		}
-            
+								case 2://type 2
+								System.out.println("type = "+type);
+									pstm = con.prepareStatement(sqlUrl);      
+									pstm.setString(1,user);
+									pstm.setString(2,password);
+									pstm.setString(3,note);																													
+									break;
+								default: 
+									System.err.println("wrong type - "+type);
+						}
+            updateNum = pstm.executeUpdate();
             pstm.close();
             con.close();
 
@@ -239,7 +245,7 @@ public class Utility {
             System.err.println("SQLException: " + ex.getMessage());
             return 0;
         }
-		return updateNum;
+					return updateNum;
 		
 	}
 
